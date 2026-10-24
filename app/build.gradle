@@ -1,0 +1,43 @@
+plugins { id 'com.android.application' }
+
+// The private keystore is never stored in the repository.
+// When KEYSTORE_PATH and related environment variables are provided by GitHub Actions,
+// both debug and release builds use the same persistent signing certificate.
+def persistentKeystorePath = System.getenv('KEYSTORE_PATH')
+
+android {
+    namespace 'com.arianjalarang.overtime'
+    compileSdk 35
+    defaultConfig {
+        applicationId 'com.arianjalarang.overtime'
+        minSdk 23
+        targetSdk 35
+        versionCode 14
+        versionName '2.13.0'
+    }
+
+    signingConfigs {
+        persistent {
+            if (persistentKeystorePath) {
+                storeFile file(persistentKeystorePath)
+                storePassword System.getenv('KEYSTORE_PASSWORD') ?: ''
+                keyAlias System.getenv('KEY_ALIAS') ?: ''
+                keyPassword System.getenv('KEY_PASSWORD') ?: ''
+            }
+        }
+    }
+
+    buildTypes {
+        debug {
+            if (persistentKeystorePath) {
+                signingConfig signingConfigs.persistent
+            }
+        }
+        release {
+            if (persistentKeystorePath) {
+                signingConfig signingConfigs.persistent
+            }
+            minifyEnabled false
+        }
+    }
+}
