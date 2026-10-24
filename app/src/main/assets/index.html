@@ -495,6 +495,29 @@ body.light .tableWrap table th{background:#edf4fc!important}
 .detailedLedger{display:block!important;visibility:visible!important;opacity:1!important;margin-top:18px}
 #editLedgerBody td{white-space:nowrap}
 </style>
+
+<style id="v2-15-layout-and-jalali-fixes">
+/* قاب ظریف دور رابط و فاصله امن از نوار پایین در همه صفحات */
+body::after{content:"";position:fixed;inset:5px;border:1px solid rgba(42,220,190,.25);border-radius:18px;pointer-events:none;z-index:9999;box-shadow:inset 0 0 22px rgba(10,50,85,.08)}
+.main{padding-left:clamp(12px,2.8vw,28px)!important;padding-right:clamp(12px,2.8vw,28px)!important;padding-bottom:calc(142px + env(safe-area-inset-bottom,0px))!important}
+.appSubPage{padding-bottom:calc(125px + env(safe-area-inset-bottom,0px))!important}
+.bottomNavSpacer{height:100px;min-height:100px;width:100%;pointer-events:none}
+.bottomNav{bottom:max(12px,env(safe-area-inset-bottom));width:min(520px,calc(100vw - 34px));}
+.homeTop{position:relative!important;direction:rtl!important;min-height:66px;padding:12px 60px!important;}
+.homeTop .hamburger{position:absolute!important;right:12px!important;left:auto!important;top:50%;transform:translateY(-50%);z-index:2}
+.homeTopTitle{width:100%;flex:1 1 100%;text-align:center!important}
+.homeTop>div:last-child{position:absolute!important;left:12px!important;right:auto!important;top:50%;transform:translateY(-50%);}
+.topReminderBtn svg{stroke:#f1f8ff!important;color:#f1f8ff!important;fill:none!important;stroke-width:2!important}
+.att.out,.attendance .att.out{background:linear-gradient(135deg,#a91f3d,#f04461)!important;border:1px solid #ff6a83!important;color:#fff!important;box-shadow:0 6px 18px #e51d4b35!important}
+.att.out small{color:#fff!important}
+.reminderJalaliDate{display:grid;grid-template-columns:1fr 1.25fr .8fr;gap:8px;direction:rtl;margin:5px 0 12px}
+.reminderJalaliDate select{min-width:0;width:100%;padding:12px 8px;border-radius:11px;border:1px solid var(--line,#29496a);background:#0d2038;color:#f1f7ff;font:inherit;outline:none}
+.reminderJalaliDate select:focus{border-color:#19e3a5;box-shadow:0 0 0 2px #19e3a522}
+#editDayDetail input[type=time],#editDayDetail input[type=time]::-webkit-calendar-picker-indicator,.inlineEditGrid input[type=time],input[type=time]::-webkit-calendar-picker-indicator{color:#f4fbff;filter:invert(1) brightness(1.8);opacity:1}
+input[type=time]{color-scheme:dark}
+@media(max-width:600px){.main{padding-left:12px!important;padding-right:12px!important}.homeTop{padding-left:55px!important;padding-right:55px!important}.bottomNav{width:calc(100vw - 26px);bottom:max(10px,env(safe-area-inset-bottom))}.appSubPage{padding-bottom:140px!important}}
+</style>
+
 </head>
 <body>
 <div class="app">
@@ -610,8 +633,9 @@ body.light .tableWrap table th{background:#edf4fc!important}
  <button class="bottomNavBtn" data-page="reports" onclick="showReportsPage()"><span class="navGlyph"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V4h16v16zM8 16v-4m4 4V7m4 9v-6"/></svg></span><small>گزارش ماهانه</small></button>
  <button class="bottomNavBtn" data-page="calendar" onclick="showCalendarPage()"><span class="navGlyph"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="16" rx="3"/><path d="M7.5 3v4M16.5 3v4M4 9.5h16M8 13h2m4 0h2M8 17h2"/></svg></span><small>ویرایش روز و تقویم</small></button>
 </nav>
+<div class="bottomNavSpacer" aria-hidden="true"></div>
 
-<div class="reminderModal" id="reminderModal" role="dialog" aria-modal="true" aria-labelledby="reminderTitle" onclick="if(event.target===this)closeReminderModal()"><div class="reminderBox"><div style="display:flex;align-items:center;justify-content:space-between;gap:12px"><h3 id="reminderTitle">🔔 یادآورهای من</h3><button class="btn" onclick="closeReminderModal()" aria-label="بستن">×</button></div><p>برای هر تاریخ و ساعت یادآور بسازید. اعلان مرورگر باید مجاز باشد؛ برای دریافت اعلان وقتی برنامه کاملاً بسته است، نسخه نصب‌شده به سرویس اعلان/پس‌زمینه نیاز دارد.</p><form id="reminderForm" onsubmit="saveReminder(event)"><label for="reminderText">متن یادآوری</label><input id="reminderText" required maxlength="180" placeholder="مثلاً تماس با واحد تعمیرات"><label for="reminderDate">تاریخ</label><input id="reminderDate" type="date" required><label for="reminderTime">ساعت</label><input id="reminderTime" type="time" required><div class="reminderActions"><button class="btn primary" type="submit">ذخیره یادآور</button><button class="btn" type="button" onclick="requestReminderPermission()">فعال‌سازی اعلان</button></div></form><div class="reminderList" id="reminderList"></div></div></div>
+<div class="reminderModal" id="reminderModal" role="dialog" aria-modal="true" aria-labelledby="reminderTitle" onclick="if(event.target===this)closeReminderModal()"><div class="reminderBox"><div style="display:flex;align-items:center;justify-content:space-between;gap:12px"><h3 id="reminderTitle">🔔 یادآورهای من</h3><button class="btn" onclick="closeReminderModal()" aria-label="بستن">×</button></div><p>برای هر تاریخ و ساعت یادآور بسازید. اعلان مرورگر باید مجاز باشد؛ برای دریافت اعلان وقتی برنامه کاملاً بسته است، نسخه نصب‌شده به سرویس اعلان/پس‌زمینه نیاز دارد.</p><form id="reminderForm" onsubmit="saveReminder(event)"><label for="reminderText">متن یادآوری</label><input id="reminderText" required maxlength="180" placeholder="مثلاً تماس با واحد تعمیرات"><label>تاریخ شمسی</label><div class="reminderJalaliDate"><select id="reminderJYear" aria-label="سال شمسی" required onchange="updateReminderDayOptions(true)"></select><select id="reminderJMonth" aria-label="ماه شمسی" required onchange="updateReminderDayOptions(true)"></select><select id="reminderJDay" aria-label="روز شمسی" required onchange="syncReminderJalaliDate()"></select></div><input id="reminderDate" type="hidden" required><label for="reminderTime">ساعت</label><input id="reminderTime" type="time" required><div class="reminderActions"><button class="btn primary" type="submit">ذخیره یادآور</button><button class="btn" type="button" onclick="requestReminderPermission()">فعال‌سازی اعلان</button></div></form><div class="reminderList" id="reminderList"></div></div></div>
 <div class="toast" id="toast"></div>
 
 <div class="modal appMenuModal" id="appMenu">
@@ -1750,11 +1774,27 @@ window.addEventListener('load',()=>{updateHeroClock();setInterval(updateHeroCloc
 const REMINDER_KEY='overtime.reminders.v1';
 function readReminders(){try{return JSON.parse(localStorage.getItem(REMINDER_KEY)||'[]')}catch(e){return []}}
 function writeReminders(a){localStorage.setItem(REMINDER_KEY,JSON.stringify(a));renderReminders()}
-function openReminderModal(){document.getElementById('reminderModal')?.classList.add('open');const d=document.getElementById('reminderDate');if(d&&!d.value){const n=new Date();d.value=`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`}renderReminders();}
+function openReminderModal(){document.getElementById('reminderModal')?.classList.add('open');initReminderJalaliPicker();renderReminders();}
 function closeReminderModal(){document.getElementById('reminderModal')?.classList.remove('open')}
+function initReminderJalaliPicker(){
+ const ys=document.getElementById('reminderJYear'),ms=document.getElementById('reminderJMonth');if(!ys||!ms)return;
+ const now=new Date(),todayISO=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`,jp=jalaliParts(todayISO);
+ if(!ys.options.length){for(let y=Number(jp.y)-1;y<=Number(jp.y)+5;y++){const o=document.createElement('option');o.value=String(y);o.textContent=faNum(y);ys.appendChild(o)}JMONTHS.slice(1).forEach((name,i)=>{const o=document.createElement('option');o.value=String(i+1);o.textContent=name;ms.appendChild(o)});}
+ if(!ys.dataset.ready){ys.value=jp.y;ms.value=String(Number(jp.m));ys.dataset.ready='1';updateReminderDayOptions(false);document.getElementById('reminderJDay').value=String(Number(jp.d));syncReminderJalaliDate();}
+}
+function updateReminderDayOptions(clampDay){
+ const ys=document.getElementById('reminderJYear'),ms=document.getElementById('reminderJMonth'),ds=document.getElementById('reminderJDay');if(!ys||!ms||!ds)return;
+ const old=Number(ds.value)||1,y=Number(ys.value),m=Number(ms.value);let max=31;
+ while(max>28){try{const iso=jalaliToGregorian(y,m,max),p=jalaliParts(iso);if(Number(p.y)===y&&Number(p.m)===m&&Number(p.d)===max)break;}catch(e){}max--;}
+ ds.innerHTML='';for(let d=1;d<=max;d++){const o=document.createElement('option');o.value=String(d);o.textContent=faNum(d);ds.appendChild(o)}ds.value=String(Math.min(clampDay?old:(Number(ds.value)||old),max));if(!ds.value)ds.value='1';syncReminderJalaliDate();
+}
+function syncReminderJalaliDate(){
+ const ys=document.getElementById('reminderJYear'),ms=document.getElementById('reminderJMonth'),ds=document.getElementById('reminderJDay'),hidden=document.getElementById('reminderDate');if(!ys||!ms||!ds||!hidden||!ys.value||!ms.value||!ds.value)return;
+ try{const iso=jalaliToGregorian(Number(ys.value),Number(ms.value),Number(ds.value)),p=jalaliParts(iso);hidden.value=Number(p.y)===Number(ys.value)&&Number(p.m)===Number(ms.value)&&Number(p.d)===Number(ds.value)?iso:'';}catch(e){hidden.value='';}
+}
 async function requestReminderPermission(){if(!('Notification' in window)){toast('این مرورگر از اعلان پشتیبانی نمی‌کند.');return}try{const p=await Notification.requestPermission();toast(p==='granted'?'اعلان‌ها فعال شدند.':'اجازه اعلان داده نشد.')}catch(e){toast('فعال‌سازی اعلان در این محیط ممکن نیست.')}}
-function saveReminder(e){e.preventDefault();const text=document.getElementById('reminderText').value.trim(),date=document.getElementById('reminderDate').value,time=document.getElementById('reminderTime').value;if(!text||!date||!time)return;const a=readReminders();a.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),text,date,time,fired:false,created:Date.now()});writeReminders(a);document.getElementById('reminderText').value='';toast('یادآور ذخیره شد.');}
-function renderReminders(){const el=document.getElementById('reminderList');if(!el)return;const a=readReminders().sort((x,y)=>(x.date+x.time).localeCompare(y.date+y.time));el.innerHTML='';if(!a.length){el.innerHTML='<div class="reminderItem">هنوز یادآوری ثبت نشده است.</div>';return}a.forEach(r=>{const row=document.createElement('div');row.className='reminderItem';const info=document.createElement('span');info.textContent=`${r.text} — ${r.date}، ${r.time}${r.fired?' ✓':''}`;const del=document.createElement('button');del.className='btn';del.textContent='حذف';del.onclick=()=>writeReminders(readReminders().filter(x=>x.id!==r.id));row.append(info,del);el.appendChild(row)})}
+function saveReminder(e){e.preventDefault();syncReminderJalaliDate();const text=document.getElementById('reminderText').value.trim(),date=document.getElementById('reminderDate').value,time=document.getElementById('reminderTime').value;if(!text||!date||!time){toast('تاریخ شمسی و ساعت را درست انتخاب کنید.');return;}const a=readReminders();a.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),text,date,time,fired:false,created:Date.now()});writeReminders(a);document.getElementById('reminderText').value='';toast('یادآور ذخیره شد.');}
+function renderReminders(){const el=document.getElementById('reminderList');if(!el)return;const a=readReminders().sort((x,y)=>(x.date+x.time).localeCompare(y.date+y.time));el.innerHTML='';if(!a.length){el.innerHTML='<div class="reminderItem">هنوز یادآوری ثبت نشده است.</div>';return}a.forEach(r=>{const row=document.createElement('div');row.className='reminderItem';const info=document.createElement('span');let shownDate=r.date;try{shownDate=jalaliParts(r.date).text}catch(e){}info.textContent=`${r.text} — ${shownDate}، ${faNum(r.time)}${r.fired?' ✓':''}`;const del=document.createElement('button');del.className='btn';del.textContent='حذف';del.onclick=()=>writeReminders(readReminders().filter(x=>x.id!==r.id));row.append(info,del);el.appendChild(row)})}
 let reminderAudioContext=null;
 function playFantasyDing(){try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;reminderAudioContext=reminderAudioContext||new AC();if(reminderAudioContext.state==='suspended')reminderAudioContext.resume();const ctx=reminderAudioContext,now=ctx.currentTime;[[880,0,.22],[1174.66,.12,.3],[1567.98,.25,.36]].forEach(([freq,delay,duration])=>{const osc=ctx.createOscillator(),gain=ctx.createGain();osc.type='sine';osc.frequency.setValueAtTime(freq,now+delay);gain.gain.setValueAtTime(.0001,now+delay);gain.gain.exponentialRampToValueAtTime(.12,now+delay+.025);gain.gain.exponentialRampToValueAtTime(.0001,now+delay+duration);osc.connect(gain);gain.connect(ctx.destination);osc.start(now+delay);osc.stop(now+delay+duration+.03)});}catch(e){}}
 function persistBeforeLeaving(){try{if(typeof state!=='undefined'&&typeof STORAGE!=='undefined'&&state)localStorage.setItem(STORAGE,JSON.stringify(state));}catch(e){}}
