@@ -145,19 +145,28 @@ public class MainActivity extends Activity {
   }
 
   private class AndroidBridge {
-    @JavascriptInterface public void updateOvertimeWidget(String overtime, String amount, String accent, String background) {
+    @JavascriptInterface public void updateOvertimeWidget(String overtime, String amount, String accent, String background, String person) {
       try {
         android.content.SharedPreferences prefs = getSharedPreferences("overtime_widget", MODE_PRIVATE);
         prefs.edit().putString("overtime", overtime == null ? "۰:۰۰" : overtime)
           .putString("amount", amount == null ? "۰ ریال" : amount)
-          .putString("accent", accent == null ? "#39d0b4" : accent)
-          .putString("background", background == null ? "#101c2f" : background).apply();
+          .putString("accent", accent == null ? "#13e0a2" : accent)
+          .putString("background", background == null ? "#101c2f" : background)
+          .putString("person", person == null ? "" : person).apply();
         Intent update = new Intent(MainActivity.this, OvertimeWidgetProvider.class);
         update.setAction(android.appwidget.AppWidgetManager.ACTION_APPWIDGET_UPDATE);
         int[] ids = android.appwidget.AppWidgetManager.getInstance(MainActivity.this).getAppWidgetIds(new android.content.ComponentName(MainActivity.this, OvertimeWidgetProvider.class));
         update.putExtra(android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
         sendBroadcast(update);
       } catch (Exception ignored) {}
+    }
+    @JavascriptInterface public String consumeWidgetAttendance() {
+      try {
+        android.content.SharedPreferences prefs = getSharedPreferences("overtime_widget", MODE_PRIVATE);
+        String queue = prefs.getString("widget_attendance_queue", "[]");
+        prefs.edit().putString("widget_attendance_queue", "[]").apply();
+        return queue;
+      } catch (Exception e) { return "[]"; }
     }
     @JavascriptInterface public void scheduleReminder(String id, String text, String timestamp) {
       try { long at = Long.parseLong(timestamp); runOnUiThread(() -> scheduleNativeReminder(id, text, at)); } catch (Exception ignored) {}

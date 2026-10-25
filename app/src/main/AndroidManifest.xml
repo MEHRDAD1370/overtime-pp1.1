@@ -16,6 +16,7 @@
       <meta-data android:name="android.appwidget.provider" android:resource="@xml/overtime_widget_info" />
     </receiver>
     <receiver android:name="com.arianjalarang.overtime.MainActivity$ReminderReceiver" android:enabled="true" android:exported="false" />
+    <receiver android:name="com.arianjalarang.overtime.WidgetAttendanceReceiver" android:enabled="true" android:exported="false" />
     <activity android:name="com.arianjalarang.overtime.MainActivity" android:exported="true" android:configChanges="orientation|screenSize|keyboardHidden">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
