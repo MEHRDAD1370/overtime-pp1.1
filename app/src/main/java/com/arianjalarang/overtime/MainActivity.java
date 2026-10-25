@@ -145,6 +145,20 @@ public class MainActivity extends Activity {
   }
 
   private class AndroidBridge {
+    @JavascriptInterface public void updateOvertimeWidget(String overtime, String amount, String accent, String background) {
+      try {
+        android.content.SharedPreferences prefs = getSharedPreferences("overtime_widget", MODE_PRIVATE);
+        prefs.edit().putString("overtime", overtime == null ? "۰:۰۰" : overtime)
+          .putString("amount", amount == null ? "۰ ریال" : amount)
+          .putString("accent", accent == null ? "#39d0b4" : accent)
+          .putString("background", background == null ? "#101c2f" : background).apply();
+        Intent update = new Intent(this, OvertimeWidgetProvider.class);
+        update.setAction(android.appwidget.AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        int[] ids = android.appwidget.AppWidgetManager.getInstance(this).getAppWidgetIds(new android.content.ComponentName(this, OvertimeWidgetProvider.class));
+        update.putExtra(android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+        sendBroadcast(update);
+      } catch (Exception ignored) {}
+    }
     @JavascriptInterface public void scheduleReminder(String id, String text, String timestamp) {
       try { long at = Long.parseLong(timestamp); runOnUiThread(() -> scheduleNativeReminder(id, text, at)); } catch (Exception ignored) {}
     }
