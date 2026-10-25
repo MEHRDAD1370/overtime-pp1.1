@@ -152,9 +152,9 @@ public class MainActivity extends Activity {
           .putString("amount", amount == null ? "۰ ریال" : amount)
           .putString("accent", accent == null ? "#39d0b4" : accent)
           .putString("background", background == null ? "#101c2f" : background).apply();
-        Intent update = new Intent(this, OvertimeWidgetProvider.class);
+        Intent update = new Intent(MainActivity.this, OvertimeWidgetProvider.class);
         update.setAction(android.appwidget.AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-        int[] ids = android.appwidget.AppWidgetManager.getInstance(this).getAppWidgetIds(new android.content.ComponentName(this, OvertimeWidgetProvider.class));
+        int[] ids = android.appwidget.AppWidgetManager.getInstance(MainActivity.this).getAppWidgetIds(new android.content.ComponentName(MainActivity.this, OvertimeWidgetProvider.class));
         update.putExtra(android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
         sendBroadcast(update);
       } catch (Exception ignored) {}
