@@ -1,6 +1,14 @@
 package com.arianjalarang.overtime;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.Notification;
+import android.content.BroadcastReceiver;
+import android.content.pm.PackageManager;
+import android.os.SystemClock;
 import android.print.PrintManager;
 import android.content.Intent;
 import android.net.Uri;
@@ -34,6 +42,8 @@ import org.json.JSONArray;
 public class MainActivity extends Activity {
   private static final int REQUEST_SAVE_FILE = 501;
   private static final int REQUEST_OPEN_FILE = 502;
+  private static final int REQUEST_POST_NOTIFICATIONS = 503;
+  private static final String REMINDER_CHANNEL = "overtime_reminders";
   private WebView web;
   private ValueCallback<Uri[]> fileChooserCallback;
   private String pendingFileName = "پشتیبان-اضافه-کاری.json";
@@ -41,6 +51,7 @@ public class MainActivity extends Activity {
 
   @Override public void onCreate(Bundle b) {
     super.onCreate(b);
+    createReminderChannel();
     web = new WebView(this);
     setContentView(web);
     WebSettings s = web.getSettings();
@@ -84,7 +95,67 @@ public class MainActivity extends Activity {
     web.loadUrl("file:///android_asset/index.html");
   }
 
+  private void createReminderChannel() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      NotificationChannel channel = new NotificationChannel(REMINDER_CHANNEL, "یادآورهای پنل اضافه‌کاری", NotificationManager.IMPORTANCE_HIGH);
+      channel.setDescription("اعلان یادآورهای زمان‌بندی‌شده");
+      channel.enableVibration(true);
+      ((NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE)).createNotificationChannel(channel);
+    }
+  }
+
+  private PendingIntent reminderPendingIntent(String id, String title, String body, int flags) {
+    Intent intent = new Intent(this, ReminderReceiver.class);
+    intent.setAction("com.arianjalarang.overtime.REMINDER." + id);
+    intent.putExtra("reminder_id", id); intent.putExtra("reminder_title", title); intent.putExtra("reminder_body", body);
+    int requestCode = id == null ? 0 : id.hashCode();
+    return PendingIntent.getBroadcast(this, requestCode, intent, flags | PendingIntent.FLAG_UPDATE_CURRENT | (Build.VERSION.SDK_INT >= 23 ? PendingIntent.FLAG_IMMUTABLE : 0));
+  }
+
+  private void scheduleNativeReminder(String id, String title, long atMillis) {
+    if (Build.VERSION.SDK_INT >= 33 && checkSelfPermission("android.permission.POST_NOTIFICATIONS") != PackageManager.PERMISSION_GRANTED) {
+      requestPermissions(new String[]{"android.permission.POST_NOTIFICATIONS"}, REQUEST_POST_NOTIFICATIONS);
+    }
+    if (atMillis <= System.currentTimeMillis()) return;
+    AlarmManager manager = (AlarmManager)getSystemService(ALARM_SERVICE);
+    PendingIntent pi = reminderPendingIntent(id, "یادآور اضافه‌کاری", title, 0);
+    if (Build.VERSION.SDK_INT >= 23) manager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, atMillis, pi);
+    else manager.set(AlarmManager.RTC_WAKEUP, atMillis, pi);
+  }
+
+  private void cancelNativeReminder(String id) {
+    AlarmManager manager = (AlarmManager)getSystemService(ALARM_SERVICE);
+    if (manager != null) manager.cancel(reminderPendingIntent(id, "یادآور اضافه‌کاری", "", 0));
+  }
+
+  public static class ReminderReceiver extends BroadcastReceiver {
+    @Override public void onReceive(Context context, Intent intent) {
+      String id = intent.getStringExtra("reminder_id");
+      String body = intent.getStringExtra("reminder_body");
+      NotificationManager manager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        NotificationChannel channel = new NotificationChannel("overtime_reminders", "یادآورهای پنل اضافه‌کاری", NotificationManager.IMPORTANCE_HIGH);
+        channel.setDescription("اعلان یادآورهای زمان‌بندی‌شده"); channel.enableVibration(true); manager.createNotificationChannel(channel);
+      }
+      if (Build.VERSION.SDK_INT >= 33 && context.checkSelfPermission("android.permission.POST_NOTIFICATIONS") != PackageManager.PERMISSION_GRANTED) return;
+      Notification.Builder builder = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? new Notification.Builder(context, "overtime_reminders") : new Notification.Builder(context);
+      builder.setSmallIcon(context.getApplicationInfo().icon).setContentTitle("یادآور اضافه‌کاری").setContentText(body == null ? "زمان یادآوری فرا رسیده است" : body).setStyle(new Notification.BigTextStyle().bigText(body)).setAutoCancel(true).setCategory(Notification.CATEGORY_REMINDER).setDefaults(Notification.DEFAULT_ALL);
+      manager.notify(id == null ? (int)System.currentTimeMillis() : id.hashCode(), builder.build());
+    }
+  }
+
   private class AndroidBridge {
+    @JavascriptInterface public void scheduleReminder(String id, String text, String timestamp) {
+      try { long at = Long.parseLong(timestamp); runOnUiThread(() -> scheduleNativeReminder(id, text, at)); } catch (Exception ignored) {}
+    }
+    @JavascriptInterface public void cancelReminder(String id) { runOnUiThread(() -> cancelNativeReminder(id)); }
+    @JavascriptInterface public void requestNotificationPermission() {
+      runOnUiThread(() -> {
+        createReminderChannel();
+        if (Build.VERSION.SDK_INT >= 33 && checkSelfPermission("android.permission.POST_NOTIFICATIONS") != PackageManager.PERMISSION_GRANTED) requestPermissions(new String[]{"android.permission.POST_NOTIFICATIONS"}, REQUEST_POST_NOTIFICATIONS);
+        else if (web != null) web.evaluateJavascript("toast('اعلان‌های گوشی فعال هستند')", null);
+      });
+    }
     @JavascriptInterface public void requestHolidayYear(String year, String requestId) {
       // Fetch one JSON file per Jalali year from GitHub, then return it to the WebView.
       new Thread(() -> {

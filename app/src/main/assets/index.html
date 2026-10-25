@@ -72,7 +72,7 @@ body:not(.light) .detailNumbers span b { color:#ffffff !important; }
 .holidayOccasions{margin:8px 0 12px;padding:9px 11px;border-radius:10px;background:rgba(245,166,35,.10);border:1px solid rgba(245,166,35,.32);line-height:1.8}
 .holidayOccasions ul{margin:5px 0 0;padding-right:20px}.holidayOccasions li{margin:2px 0}
 @media(max-width:560px){.monthDay .dayOccasion{font-size:7px;-webkit-line-clamp:2}.monthDay{min-height:58px}}
-</style>
+.monthDay.dayComplete{background:linear-gradient(145deg,#063d32,#0b6048)!important;border-color:#24d99a!important;color:#eafff6!important;box-shadow:inset 0 0 0 1px #24d99a55}.monthDay.dayComplete .dayMini{color:#8affc9!important}.monthDay.dayIncomplete{background:linear-gradient(145deg,#4a1425,#641c30)!important;border-color:#ff5877!important;color:#fff0f3!important;box-shadow:inset 0 0 0 1px #ff587755}.monthDay.dayIncomplete .dayMini{color:#ffb2c0!important}</style>
 
 <style id="reference-redesign">
 :root{
@@ -417,7 +417,7 @@ body{background:radial-gradient(ellipse at 50% -10%,#123a63 0,#07172c 48%,#040c1
 .homeTotalCard{position:relative;overflow:hidden;border-radius:22px;padding:21px 20px 18px;margin-bottom:16px;color:#fff;background:linear-gradient(120deg,#07895f,#04bd91 58%,#087c83);border:1px solid #16d7a2;box-shadow:0 12px 28px #00c99320;text-align:center}
 .homeTotalCard:after{content:"";position:absolute;width:200px;height:200px;left:-55px;bottom:-145px;border:1px solid #ffffff22;border-radius:50%;box-shadow:0 0 0 18px #ffffff08,0 0 0 38px #ffffff06;pointer-events:none}
 .homeTotalIcon{position:absolute;right:17px;top:16px;width:42px;height:42px;border-radius:14px;background:#ffffff1c;display:grid;place-items:center;font-size:25px}
-.homeTotalLabel{font-size:15px;font-weight:800;margin-bottom:7px}.homeTotalValue{font-size:36px;font-weight:900;line-height:1.4;direction:rtl}.homeTotalRange{font-size:11px;margin-top:6px;color:#d5fff1}
+.homeTotalLabel{font-size:15px;font-weight:800;margin-bottom:7px}.homeTotalValue{font-size:36px;font-weight:900;line-height:1.4;direction:rtl}.homeTotalPay{font-size:12px;font-weight:700;line-height:1.7;margin-top:0;color:#e0fff6;opacity:.96}.homeTotalRange{font-size:11px;margin-top:6px;color:#d5fff1}.homeTopSpacer{height:10px;min-height:10px;width:100%;border-radius:0 0 8px 8px;background:linear-gradient(90deg,transparent,#16d7a218,transparent);margin:0 0 5px;pointer-events:none}
 .attendance{display:grid!important;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 22px!important}.att{min-height:110px;border-radius:19px!important;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:9px;font-size:17px!important;box-shadow:0 10px 24px #0002}.att.in{background:linear-gradient(145deg,#087f69,#0cc99c)!important;border:1px solid #19e0b0!important}.att.out{background:linear-gradient(145deg,#273fd0,#174a9e)!important;border:1px solid #6477ff!important}.att small{font-size:11px!important;color:#d4fff6;opacity:.9}
 .recentHome{display:block!important;background:#0b1b30!important;border:1px solid #203f61!important;border-radius:20px!important;overflow:hidden}.recentHome .tableHead{padding:15px 16px;border-bottom:1px solid #1b3654}.recentHome .tableHead b{font-size:15px;color:#f1f7ff}.textAction{background:transparent;color:#15dda1;font-size:12px;padding:6px}.homeRecentList{padding:9px;display:grid;gap:8px}.recentItem{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:12px;border-radius:13px;background:linear-gradient(110deg,#0d2440,#0b1b30);border:1px solid #1c3c5e;min-width:0}.recentMain{min-width:0}.recentDate{font-size:12px;color:#d9e8fa;font-weight:700}.recentSub{font-size:10px;color:#91abc9;margin-top:6px;line-height:1.7}.recentTime{font-size:14px;direction:ltr;color:#f2f7ff;font-weight:800}.recentBadge{font-size:10px;border-radius:99px;padding:6px 9px;white-space:nowrap}.recentBadge.in{color:#45e8b5;background:#0a493e}.recentBadge.out{color:#ff8da9;background:#4b2036}.recentEmpty{text-align:center;color:var(--muted);padding:25px 10px;font-size:13px}
 /* The requested home screen stays focused; reports remain accessible from the menu. */
@@ -524,6 +524,7 @@ input[type=time]{color-scheme:dark}
 
 <main class="main">
 <section id="dashboardPage">
+  <div class="homeTopSpacer" aria-hidden="true"></div>
   <header class="top homeTop">
     <button class="hamburger" type="button" onclick="openAppMenu()" aria-label="باز کردن تنظیمات">☰</button>
     <div class="homeTopTitle">اضافه‌کاری</div>
@@ -538,6 +539,7 @@ input[type=time]{color-scheme:dark}
     <div class="homeTotalIcon">◷</div>
     <div class="homeTotalLabel">جمع اضافه‌کاری</div>
     <div class="homeTotalValue" id="homeTotalOvertime">۰:۰۰</div>
+    <div class="homeTotalPay" id="homeTotalPay">جمع مبلغ دریافتی: ۰ ریال</div>
     <div class="homeTotalRange" id="homeRangeLabel">بازه ۲۴ ماه قبل تا ۲۳ ماه جاری</div>
   </section>
   <div id="internalUserControls" hidden>
@@ -1626,11 +1628,11 @@ function renderEditCalendar(){
  const visibleDates=[];
  for(let d=1;d<=days;d++){
   let iso;try{iso=jalaliToGregorian(y,m,d)}catch(e){continue;}visibleDates.push(iso);
-  const r=rows.find(x=>x.date===iso),hasIn=!!(r?.in&&r.in!=='00:00'),hasOut=!!(r?.out&&r.out!=='00:00');
-  const official=isOfficialHoliday(iso),friday=excelWeekFriday(iso),events=holidayEventsForDate(iso),attended=hasIn||hasOut;
-  const classes=['monthDay'];if(attended)classes.push('hasAttendance');if(official)classes.push('isOfficialHoliday');if(friday)classes.push('isFriday');if(typeof reportSelectedDate!=='undefined'&&reportSelectedDate===iso)classes.push('selected');
+  const r=rows.find(x=>x.date===iso),hasIn=!!(r?.in&&r.in!=='00:00'&&r.in!==''),hasOut=!!(r?.out&&r.out!=='00:00'&&r.out!=='');
+  const official=isOfficialHoliday(iso),friday=excelWeekFriday(iso),events=holidayEventsForDate(iso),attended=hasIn&&hasOut,partial=!!r&&(hasIn!==hasOut);
+  const classes=['monthDay'];if(attended)classes.push('dayComplete');else if(partial)classes.push('dayIncomplete');if(official)classes.push('isOfficialHoliday');if(friday)classes.push('isFriday');if(typeof reportSelectedDate!=='undefined'&&reportSelectedDate===iso)classes.push('selected');
   const eventText=events.map(e=>e.description+(e.additional_description?' — '+e.additional_description:'')).join('، ');
-  const mini=hasIn||hasOut?`${hasIn?'ورود '+faNum(r.in):''}${hasIn&&hasOut?' · ':''}${hasOut?'خروج '+faNum(r.out):''}`:official?'تعطیل رسمی':friday?'جمعه':'بدون ثبت';
+  const mini=attended?`ورود ${faNum(r.in)} · خروج ${faNum(r.out)}`:partial?`ناقص: ${hasIn?'ورود ثبت شده':'خروج ثبت شده'}`:official?'تعطیل رسمی':friday?'جمعه':'بدون ثبت';
   html+=`<button type="button" class="${classes.join(' ')}" onclick="selectEditDay('${iso}')" title="${escapeHolidayHtml(jalaliParts(iso).text+(official?' · تعطیل رسمی':'')+(eventText?' · '+eventText:''))}"><strong>${faNum(d)}</strong><span class="dayMini">${mini}</span>${events.length?`<span class="dayOccasion">${escapeHolidayHtml(events[0].description)}</span>`:''}</button>`;
  }
  grid.innerHTML=html;
@@ -1671,8 +1673,9 @@ function renderHome(){
  const greet=document.getElementById('homeGreeting');if(greet)greet.textContent='سلام '+p+' عزیز';
  const lines=['هر قدم کوچک امروز، بخشی از موفقیت فرداست.','با نظم و پشتکار، نتیجه‌های بزرگ ساخته می‌شوند.','تلاش امروزت، تجربه و پیشرفت فردای توست.','کیفیت کار از توجه به جزئیات آغاز می‌شود.'];
  const line=document.getElementById('motivationLine');if(line)line.textContent=lines[(new Date().getDate()+p.length)%lines.length];
- const range=selectedRange();let total=0;if(range.valid){person.rows.filter(r=>r.date>=range.from&&r.date<=range.to).forEach(r=>{const c=calc(r,p);total+=Math.max(0,c.ot-c.def);});}
+ const range=selectedRange();let total=0,totalPay=0;if(range.valid){person.rows.filter(r=>r.date>=range.from&&r.date<=range.to).forEach(r=>{const c=calc(r,p);const net=Math.max(0,c.ot-c.def);total+=net;totalPay+=(net/60)*(Number(person.rate)||0);});}
  const val=document.getElementById('homeTotalOvertime');if(val)val.textContent=hm(total);
+ const payVal=document.getElementById('homeTotalPay');if(payVal)payVal.textContent='جمع مبلغ دریافتی: '+money(totalPay)+' ریال';
  const label=document.getElementById('homeRangeLabel');if(label)label.textContent=range.valid?`از ${jalaliParts(range.from).text} تا ${jalaliParts(range.to).text}`:'بازه ۲۴ ماه قبل تا ۲۳ ماه جاری';
  const avatar=document.getElementById('homeAvatar');if(avatar){const src=localStorage.getItem(avatarStorageKey(p));if(src)avatar.innerHTML=`<img src="${src}" alt="نمایه">`;else avatar.textContent=(p||'؟').trim().charAt(0)||'●';}
  const list=document.getElementById('homeRecentList');if(list){const events=attendanceEvents(person).slice(0,10);list.innerHTML=events.length?events.map(e=>recentEventHtml(e,p)).join(''):'<div class="recentEmpty">هنوز ثبتی انجام نشده است.</div>';}
@@ -1792,9 +1795,9 @@ function syncReminderJalaliDate(){
  const ys=document.getElementById('reminderJYear'),ms=document.getElementById('reminderJMonth'),ds=document.getElementById('reminderJDay'),hidden=document.getElementById('reminderDate');if(!ys||!ms||!ds||!hidden||!ys.value||!ms.value||!ds.value)return;
  try{const iso=jalaliToGregorian(Number(ys.value),Number(ms.value),Number(ds.value)),p=jalaliParts(iso);hidden.value=Number(p.y)===Number(ys.value)&&Number(p.m)===Number(ms.value)&&Number(p.d)===Number(ds.value)?iso:'';}catch(e){hidden.value='';}
 }
-async function requestReminderPermission(){if(!('Notification' in window)){toast('این مرورگر از اعلان پشتیبانی نمی‌کند.');return}try{const p=await Notification.requestPermission();toast(p==='granted'?'اعلان‌ها فعال شدند.':'اجازه اعلان داده نشد.')}catch(e){toast('فعال‌سازی اعلان در این محیط ممکن نیست.')}}
-function saveReminder(e){e.preventDefault();syncReminderJalaliDate();const text=document.getElementById('reminderText').value.trim(),date=document.getElementById('reminderDate').value,time=document.getElementById('reminderTime').value;if(!text||!date||!time){toast('تاریخ شمسی و ساعت را درست انتخاب کنید.');return;}const a=readReminders();a.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),text,date,time,fired:false,created:Date.now()});writeReminders(a);document.getElementById('reminderText').value='';toast('یادآور ذخیره شد.');}
-function renderReminders(){const el=document.getElementById('reminderList');if(!el)return;const a=readReminders().sort((x,y)=>(x.date+x.time).localeCompare(y.date+y.time));el.innerHTML='';if(!a.length){el.innerHTML='<div class="reminderItem">هنوز یادآوری ثبت نشده است.</div>';return}a.forEach(r=>{const row=document.createElement('div');row.className='reminderItem';const info=document.createElement('span');let shownDate=r.date;try{shownDate=jalaliParts(r.date).text}catch(e){}info.textContent=`${r.text} — ${shownDate}، ${faNum(r.time)}${r.fired?' ✓':''}`;const del=document.createElement('button');del.className='btn';del.textContent='حذف';del.onclick=()=>writeReminders(readReminders().filter(x=>x.id!==r.id));row.append(info,del);el.appendChild(row)})}
+async function requestReminderPermission(){if(window.AndroidBridge&&typeof AndroidBridge.requestNotificationPermission==='function'){AndroidBridge.requestNotificationPermission();toast('درخواست اجازه اعلان گوشی ارسال شد.');return}if(!('Notification' in window)){toast('این مرورگر از اعلان پشتیبانی نمی‌کند.');return}try{const p=await Notification.requestPermission();toast(p==='granted'?'اعلان‌ها فعال شدند.':'اجازه اعلان داده نشد.')}catch(e){toast('فعال‌سازی اعلان در این محیط ممکن نیست.')}}
+function saveReminder(e){e.preventDefault();syncReminderJalaliDate();const text=document.getElementById('reminderText').value.trim(),date=document.getElementById('reminderDate').value,time=document.getElementById('reminderTime').value;if(!text||!date||!time){toast('تاریخ شمسی و ساعت را درست انتخاب کنید.');return;}const id=Date.now().toString(36)+Math.random().toString(36).slice(2,6),[yy,mm,dd]=date.split('-').map(Number),[hh,mi]=time.split(':').map(Number),when=new Date(yy,mm-1,dd,hh,mi,0,0).getTime();const reminder={id,text,date,time,fired:false,created:Date.now(),nativeScheduled:!!(window.AndroidBridge&&typeof AndroidBridge.scheduleReminder==='function')};const a=readReminders();a.push(reminder);writeReminders(a);if(when>Date.now()&&window.AndroidBridge&&typeof AndroidBridge.scheduleReminder==='function'){try{AndroidBridge.scheduleReminder(id,text,String(when));toast('یادآور ذخیره شد؛ اعلان گوشی برای زمان تعیین‌شده برنامه‌ریزی شد.')}catch(err){toast('یادآور ذخیره شد؛ برنامه‌ریزی اعلان ناموفق بود.')}}else toast(when<=Date.now()?'زمان یادآور گذشته است؛ زمان آینده انتخاب کنید.':'یادآور ذخیره شد.');document.getElementById('reminderText').value='';}
+function renderReminders(){const el=document.getElementById('reminderList');if(!el)return;const a=readReminders().sort((x,y)=>(x.date+x.time).localeCompare(y.date+y.time));el.innerHTML='';if(!a.length){el.innerHTML='<div class="reminderItem">هنوز یادآوری ثبت نشده است.</div>';return}a.forEach(r=>{const row=document.createElement('div');row.className='reminderItem';const info=document.createElement('span');let shownDate=r.date;try{shownDate=jalaliParts(r.date).text}catch(e){}info.textContent=`${r.text} — ${shownDate}، ${faNum(r.time)}${r.fired?' ✓':''}`;const del=document.createElement('button');del.className='btn';del.textContent='حذف';del.onclick=()=>{if(window.AndroidBridge&&typeof AndroidBridge.cancelReminder==='function')try{AndroidBridge.cancelReminder(r.id)}catch(e){}writeReminders(readReminders().filter(x=>x.id!==r.id));};row.append(info,del);el.appendChild(row)})}
 let reminderAudioContext=null;
 function playFantasyDing(){try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;reminderAudioContext=reminderAudioContext||new AC();if(reminderAudioContext.state==='suspended')reminderAudioContext.resume();const ctx=reminderAudioContext,now=ctx.currentTime;[[880,0,.22],[1174.66,.12,.3],[1567.98,.25,.36]].forEach(([freq,delay,duration])=>{const osc=ctx.createOscillator(),gain=ctx.createGain();osc.type='sine';osc.frequency.setValueAtTime(freq,now+delay);gain.gain.setValueAtTime(.0001,now+delay);gain.gain.exponentialRampToValueAtTime(.12,now+delay+.025);gain.gain.exponentialRampToValueAtTime(.0001,now+delay+duration);osc.connect(gain);gain.connect(ctx.destination);osc.start(now+delay);osc.stop(now+delay+duration+.03)});}catch(e){}}
 function persistBeforeLeaving(){try{if(typeof state!=='undefined'&&typeof STORAGE!=='undefined'&&state)localStorage.setItem(STORAGE,JSON.stringify(state));}catch(e){}}

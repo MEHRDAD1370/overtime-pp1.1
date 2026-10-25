@@ -1,5 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
   <uses-permission android:name="android.permission.INTERNET" />
+  <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+  <uses-permission android:name="android.permission.VIBRATE" />
+  <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
   <application
       android:allowBackup="true"
       android:label="پنل اضافه‌کاری"
@@ -8,6 +11,7 @@
       android:theme="@android:style/Theme.Material.Light.NoActionBar"
       android:usesCleartextTraffic="false"
       android:supportsRtl="true">
+    <receiver android:name="com.arianjalarang.overtime.MainActivity$ReminderReceiver" android:enabled="true" android:exported="false" />
     <activity android:name="com.arianjalarang.overtime.MainActivity" android:exported="true" android:configChanges="orientation|screenSize|keyboardHidden">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
