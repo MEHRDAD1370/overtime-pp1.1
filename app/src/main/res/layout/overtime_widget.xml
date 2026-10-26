@@ -1,104 +1,117 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/widget_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:padding="10dp"
-    android:background="@drawable/widget_background">
+    android:background="#13E0A2">
+
+    <ImageView
+        android:id="@+id/widget_pattern_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/widget_pattern"
+        android:scaleType="fitXY"
+        android:alpha="0.65"
+        android:contentDescription="@null" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
         android:gravity="center"
-        android:layout_marginBottom="0dp">
-        <ImageView
-            android:id="@+id/widget_clock"
-            android:layout_width="21dp"
-            android:layout_height="21dp"
-            android:src="@drawable/widget_clock"
-            android:contentDescription="ساعت" />
-        <TextView
-            android:id="@+id/widget_title"
-            android:layout_width="wrap_content"
+        android:padding="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
-            android:text="جمع اضافه‌کاری"
-            android:textStyle="bold"
-            android:textSize="15sp"
-            android:gravity="center"
-            android:textColor="#ffffff" />
-    </LinearLayout>
+            android:orientation="horizontal"
+            android:gravity="center">
+            <ImageView
+                android:id="@+id/widget_clock"
+                android:layout_width="21dp"
+                android:layout_height="21dp"
+                android:src="@drawable/widget_clock"
+                android:contentDescription="ساعت" />
+            <TextView
+                android:id="@+id/widget_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="جمع اضافه‌کاری"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:gravity="center"
+                android:textColor="#ffffff" />
+        </LinearLayout>
 
-    <TextView
-        android:id="@+id/widget_overtime"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="۰:۰۰"
-        android:textStyle="bold"
-        android:textSize="30sp"
-        android:fontFamily="sans"
-        android:gravity="center"
-        android:textColor="#ffffff"
-        android:paddingTop="0dp"
-        android:paddingBottom="0dp" />
-
-    <TextView
-        android:id="@+id/widget_amount"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="مبلغ دریافتی: ۰ ریال"
-        android:textStyle="bold"
-        android:textSize="13sp"
-        android:gravity="center"
-        android:textColor="#ffffff"
-        android:paddingTop="1dp" />
-
-    <TextView
-        android:id="@+id/widget_status"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="ثبت سریع ورود و خروج"
-        android:textSize="10sp"
-        android:gravity="center"
-        android:textColor="#ffffff"
-        android:paddingTop="3dp"
-        android:paddingBottom="4dp" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:weightSum="2">
         <TextView
-            android:id="@+id/widget_check_in"
-            android:layout_width="0dp"
-            android:layout_height="38dp"
-            android:layout_weight="1"
-            android:layout_marginEnd="4dp"
-            android:background="@drawable/widget_button_bg"
+            android:id="@+id/widget_overtime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="۰:۰۰"
+            android:textStyle="bold"
+            android:textSize="30sp"
+            android:fontFamily="sans"
             android:gravity="center"
-            android:text="⇥ ثبت ورود"
             android:textColor="#ffffff"
+            android:paddingTop="0dp"
+            android:paddingBottom="0dp" />
+
+        <TextView
+            android:id="@+id/widget_amount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="مبلغ دریافتی: ۰ ریال"
             android:textStyle="bold"
             android:textSize="13sp"
-            android:clickable="true"
-            android:focusable="true" />
-        <TextView
-            android:id="@+id/widget_check_out"
-            android:layout_width="0dp"
-            android:layout_height="38dp"
-            android:layout_weight="1"
-            android:layout_marginStart="4dp"
-            android:background="@drawable/widget_button_bg"
             android:gravity="center"
-            android:text="⇤ ثبت خروج"
             android:textColor="#ffffff"
-            android:textStyle="bold"
-            android:textSize="13sp"
-            android:clickable="true"
-            android:focusable="true" />
+            android:paddingTop="1dp" />
+
+        <TextView
+            android:id="@+id/widget_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ثبت سریع ورود و خروج"
+            android:textSize="10sp"
+            android:gravity="center"
+            android:textColor="#ffffff"
+            android:paddingTop="3dp"
+            android:paddingBottom="4dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:weightSum="2">
+            <TextView
+                android:id="@+id/widget_check_in"
+                android:layout_width="0dp"
+                android:layout_height="38dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                android:background="@drawable/widget_button_in"
+                android:gravity="center"
+                android:text="⇥ ثبت ورود"
+                android:textColor="#ffffff"
+                android:textStyle="bold"
+                android:textSize="13sp"
+                android:clickable="true"
+                android:focusable="true" />
+            <TextView
+                android:id="@+id/widget_check_out"
+                android:layout_width="0dp"
+                android:layout_height="38dp"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                android:background="@drawable/widget_button_out"
+                android:gravity="center"
+                android:text="⇤ ثبت خروج"
+                android:textColor="#ffffff"
+                android:textStyle="bold"
+                android:textSize="13sp"
+                android:clickable="true"
+                android:focusable="true" />
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</FrameLayout>

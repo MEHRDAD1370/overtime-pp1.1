@@ -56,6 +56,7 @@ public class MainActivity extends Activity {
     setContentView(web);
     WebSettings s = web.getSettings();
     s.setJavaScriptEnabled(true);
+    s.setMediaPlaybackRequiresUserGesture(false);
     s.setDomStorageEnabled(true);
     s.setAllowFileAccess(true);
     // Required for the offline HTML app to fetch the official calendar over HTTPS.

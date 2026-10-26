@@ -28,8 +28,10 @@ public class OvertimeWidgetProvider extends AppWidgetProvider {
     String overtime = p.getString("overtime", "۰:۰۰");
     String amount = p.getString("amount", "۰ ریال");
     String status = p.getString("widget_status", "ثبت سریع ورود و خروج");
+    int tileColor; try { tileColor = Color.parseColor(p.getString("accent", "#13E0A2")); } catch (Exception e) { tileColor = Color.parseColor("#13E0A2"); }
     for (int id : ids) {
       RemoteViews v = new RemoteViews(context.getPackageName(), R.layout.overtime_widget);
+      v.setInt(R.id.widget_root, "setBackgroundColor", tileColor);
       v.setTextViewText(R.id.widget_overtime, overtime);
       v.setTextViewText(R.id.widget_amount, "مبلغ دریافتی: " + amount);
       v.setTextViewText(R.id.widget_status, status);
